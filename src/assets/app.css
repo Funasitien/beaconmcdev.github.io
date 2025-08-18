@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
 @import "tailwindcss";
 @plugin "daisyui";
 
@@ -34,4 +35,25 @@
   --border: 1.5px;
   --depth: 1;
   --noise: 0;
+}
+
+:root {
+  --font: "Nunito Sans";
+  --default-font-family: "Nunito Sans" !important;
+}
+
+@font-face {
+  font-family: 'Minecraft Five';
+  src: url('https://mctitles.com/fonts/official/MinecraftFive.ttf') format('truetype');
+  font-weight: 400; /* Regular */
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Minecraft Five';
+  src: url('https://mctitles.com/fonts/official/MinecraftFiveBold.otf') format('opentype');
+  font-weight: 700; /* Bold */
+  font-style: normal;
+  font-display: swap;
 }
