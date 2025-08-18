@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeaconMC Documentation</title>
+
+    <link rel="shortcut icon" href="../assets/logo.png" type="image/x-icon">
+
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- LGJS SEO -->
+    <meta name="title" content="BeaconMC - Configuration">
+    <meta name="description" content="The lightweight Python Minecraft server software !">
+    <meta name="robots" content="index, follow">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="language" content="English">
+    <meta name="generator" content="liamgen.js">
+    <meta name="keywords" content="BeaconMC, Minecraft, Minecraft server, Python, Python Minecraft server, lightweight server, open source, plugins, plugin system, plugin creation, mods, Minecraft mods, GitHub, BeaconMC GitHub, server plugins, modding, developer tools, game development, server management, Discord, Minecraft customization, open-source project, server customization, game server, coding, programming, server mods, automation, lightweight, Python plugins, Python mods, Python game development, Python tools, Minecraft API, server plugins Python, event-driven, mods Python, spigot python, serveur minecraft python, minecraft python, spigot python minecraft, plugins python, spigot plugins">
+    <meta name="theme-color" content="##347ab4" />
+
+    <!-- OG LGJS SEO -->
+
+    <meta property="og:title" content="BeaconMC - Configuration" />
+    <meta property="og:description" content="The lightweight Python Minecraft server software !" />
+    <meta property="og:image" content="https://beaconmcdev.github.io/BeaconMC/assets/logo.png" />
+    <meta property="og:site_name" content="BeaconMC" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content="https://beaconmcdev.github.io/BeaconMC" />
+</head>
+<body>
+    <header>
+
+        <ul>
+            <li>
+                <a href="https://beaconmcdev.github.io/BeaconMC/">Home</a>
+            </li>
+            <li>
+                <a href="https://beaconmcdev.github.io/BeaconMC/documentation">Documentation</a>
+            </li>
+        </ul>
+        <h1>BeaconMC Documentation</h1>
+
+        <h2>
+            Configuration
+        </h2>
+    </header>
+    <main>
+
+        <div class="docs">
+            <h2>1 - Configuration file</h2>
+            <p>In your BeaconMC folder, open the "<code>config.json</code>" file. If it doesn't exist, you should reinstall the server. The content should looks like this :
+                <pre>{<br>"whitelist": false,<br>"max_players": 10,<br>"motd": "Welcome to BeaconMC !",<br>"online_mode": true,<br>"enforce_offline_profiles": true,<br>"lang": "en_us",<br>"debug_mode": true, <br>"ip": "0.0.0.0", <br>"port": 25565, <br>"prevent_proxy_connexion": true<br>}</pre>
+            </p>
+            <p>The following section lists all the options and their meaning.</p>
+            <h4>1.1 - whitelist</h4>
+                <ul>
+                    <li><u style="color:green;">true</u>: if you want to allow to connect only the specified people. (not implemented) (default)</li>
+                    <li><u style="color:red;">false</u>: if you want to allow everyone to connect</li>
+                </ul>
+            <h4>1.2 - max_players</h4>
+                <p>Define how many players can be connected on the server. Can be any positive and entier number. Note that if a too big value is set, it can impact the server performances.</p>
+            <h4>1.2 - motd</h4>
+                <p>This option let you choose the text displayed on the players server list. Works as vanilla servers. You can use <a href="https://minecraft.tools/en/motd.php">minecraft.tools</a> to generate your motd.</p>
+            <h4>1.3 - online_mode</h4>
+            <ul>
+                <li><u style="color:green;">true</u>: Verify connecting players using the Mojang's authentification scheme. Forbids cracked players to connect, but prevents identity thief and man-in-the-middle hack with encryption.</li>
+                <li><u style="color:red;">false</u>: Anyone can connect to the server, <b>but it is a huge security flaw for your server.</b></li>
+            </ul>
+            <h4>1.4 - enforce_offline_profiles</h4>
+                <p>An option implemented to limit the flaw of the offline mode, using IP adresses.</p>
+            <h4>1.5 - lang</h4>
+                <p>A string representing the lang <b>for messages sent to players, not to the console !</b></p>
+                <p>View how to add customs langs in the <b>3 - Lang</b> section
+            <h4>1.6 - debug_mode</h4>
+                <p>A boolean activing or not the debug mode (more informations in the console and in the logs file.</p>
+            <h4>1.7 - ip</h4>
+                <p>A string for the IP address of the server used by clients to connect. Used for the prevent_proxy_connections settings.</p>
+            <h4>1.7 - port</h4>
+                <p>An integer that represents the port used by clients to connect to the server. Default and recommended value is 25565. <b>Don't modify this setting except if you know what you are doing !</b></p>
+            <h4>1.8 - soon</h4>
+
+            <h2>2 - Server icon</h2>
+            <p>You are able to change the server icon by changing the <code>server-icon.png</code> file. It must be a 64x64 PNG file to work, and the default icon is the BeaconMC icon.</p>
+            <h2>3 - Langs</h2>
+            <p>Defaults langs are English (en_us), French (fr_fr) and Spanish (es) langs, but you can create customs or add new by creating a new json file at <code>/utils/locale/{langname}.json</code>, and adding the same translation keys as the others. Then you just have to change the lang in the <code>lang</code> configuration field.</p>
+        </div>
+        
+        
+
+        
+    </main>
+    <footer>
+        <p>
+            This website is <a href="https://github.com/BeaconMCDev/BeaconMC/tree/website" target="_blank">Open Source</a>
+        </p>
+        <p>
+            Made by <a href="https://github.com/eletrixtime" target="_blank">EletrixTime</a>, <a href="https://github.com/FewerElk" target="_blank">FewerElk</a>, <a href="https://github.com/mickbot-92" target="_blank">@mickbot-92</a> and designed by <a href="https://liamgenjs.vercel.app" target="_blank" style="color: #0888de">liamgen.js</a>
+        </p>
+    </footer>
+</body>
+</html>

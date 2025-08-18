@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeaconMC - Crash analyser</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <meta name="title" content="BeaconMC - Crash analyser">
+    <meta name="description" content="A simple tool for analysing our crash reports.">
+    <meta name="robots" content="index, follow">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="language" content="English">
+    <meta name="generator" content="LiveInGround">
+    <meta name="keywords" content="BeaconMC, Minecraft, Minecraft server, Python, Python Minecraft server, lightweight server, open source, plugins, plugin system, plugin creation, mods, Minecraft mods, GitHub, BeaconMC GitHub, server plugins, modding, developer tools, game development, server management, Discord, Minecraft customization, open-source project, server customization, game server, coding, programming, server mods, automation, lightweight, Python plugins, Python mods, Python game development, Python tools, Minecraft API, server plugins Python, event-driven, mods Python, spigot python, serveur minecraft python, minecraft python, spigot python minecraft, plugins python, spigot plugins">
+    <meta name="theme-color" content="#121212" />
+    <meta property="og:title" content="BeaconMC - Crash analyser" />
+    <meta property="og:description" content="A simple tool for analysing our crash reports." />
+    <meta property="og:image" content="https://beaconmcdev.github.io/BeaconMC/assets/logo.png" />
+    <meta property="og:site_name" content="BeaconMC" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content="https://beaconmcdev.github.io/BeaconMC/debugger" />
+    <link rel="shortcut icon" href="assets/logo.png" type="image/png">
+
+    <style>
+        body {
+            margin: 10%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            color: rgb(255, 255, 255);
+            background-color: rgb(26, 30, 34);
+        }
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        code {
+        display: block;
+        padding: 10px;
+        background-color: #1e1e1e;
+        color: #d4d4d4;
+        border-radius: 5px;
+        font-family: "Courier New", Courier, monospace;
+        white-space: pre-wrap; /* Garde la mise en forme des retours à la ligne */
+        overflow-x: auto; /* Permet un défilement horizontal si nécessaire */
+    }
+        p {
+            margin-bottom: 20px;
+            font-size: 1rem;
+        }
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 5px;
+            width: 300px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: white;
+            background-color: #0073e6;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }-a
+        button:hover {
+            background-color: #005bb5;
+        }
+        footer{
+            /* footer alway at the bottom of the page */
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            text-align: center;
+        }
+        .yellow {
+            color: #f1c40f;
+        }
+        .red {
+            color: #e74c3c;
+        }
+        #faq {
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+
+        <ul>
+            <li>
+                <a href="https://beaconmcdev.github.io/BeaconMC/">Home</a>
+            </li>
+            <li>
+                <a href="https://beaconmcdev.github.io/BeaconMC/debugger">Crash analyser</a>
+            </li>
+        </ul>
+    </header>
+    <h1>BeaconMC Crash Analyzer</h1>
+    <p>A simple tool for analysing our crash reports.</p>
+    <div id="input-c">
+        <div class="input-container">
+            <input type="text" placeholder="Enter crash data...">
+            <button onclick="parse_crashfile(document.querySelector('input').value)">Analyze</button>
+        </div>
+    </div>
+    <div id="output-c">
+        <h1>Output: </h1>
+        <hr>    
+        <p><b>BeaconMC Version:</b> <span id="beaconmc_version"></span></p>
+        <p><b>Minecraft Version:</b> <span id="mc_version"></span></p>
+        <p><b>OS Name:</b> <span id="os_name"></span></p>
+        <p><b>Date:</b> <span id="date"></span></p>
+        <p><b>Python Version:</b> <span id="python_version"></span></p>
+        <p><b>Online mode:</b> <span id="online_mode"></span></p>
+        <p><b>Total Plugin:</b> <span id="total_plugin"></span></p>
+        <p><b>Traceback Error:</b> <span id="traceback_error"></span></p>
+        <h1>Quick fixes / recommendations</h1>
+        <hr>
+        <p id="whoatotod"></p>
+    </div>
+    <div id="faq">
+        <h1 align="center">FAQ</h1>
+        <h2>Where can I find my crash report files ?</h2>
+        <p>You can find the crash files in the crash_reports folder.</p>
+        <hr>
+        <h2>What have I to paste in the analyser ?</h2>
+        <p>You have to paste the JSON info contained in the crash report. It contains all the crash informations, but they are instantly traited and not conserved.</p>
+        <!-- ... -->
+    </div>
+
+</body>
+<script>
+    LATEST_VERSION = "Alpha-dev"
+    EXISTING_BMC_VERSIONS = ("Alpha-dev", "Alpha");
+    LATEST_MC_VERSION = "1.21.8"
+    EXISTING_MC_VERSIONS = ("1.21.8", "1.21")
+    STABLE_PYTHON_VERSION = "3.10.9"
+
+    document.getElementById("input-c").style.display = "block";
+    // hide the output container
+    document.getElementById("output-c").style.display = "none";
+
+    function parse_crashfile(content) {
+        const jsonStartIndex = content.lastIndexOf('{');
+        if (jsonStartIndex === -1) {
+            alert("No data provided.");
+            return;
+        }
+
+        const jsonString = content.slice(jsonStartIndex);
+        let crashData;
+
+        try {
+            crashData = JSON.parse(jsonString);
+        } catch (error) {
+            alert("Invalid JSON data provided.");
+            return;
+        }
+
+        function parseVersion(versionString) {
+    
+            let match = versionString.match(/\d+\.\d+(\.\d+)?/);
+            return match ? match[0] : "unknown";
+        }
+
+        function parsePythonVersion(versionString) {
+            let cleanVersion = parseVersion(versionString);
+            let pythonLink = `https://docs.python.org/${cleanVersion.split('.')[0]}.${cleanVersion.split('.')[1]}/`;
+            return { cleanVersion, pythonLink };
+        }
+
+        function formatDate(isoDate) {
+            let date = new Date(isoDate);
+            return date.toLocaleString();
+        }
+
+        const beaconmc_version = crashData.bmc_version;
+        const mc_version = parseVersion(crashData.mc_version);
+        const os_name = crashData.os_name;
+        const date = formatDate(crashData.date);
+        const { cleanVersion: python_version, pythonLink } = parsePythonVersion(crashData.python_version);
+        const total_plugin = crashData.total_plugin;
+        const traceback_error = crashData.traceback;
+        const online_mode = crashData.online_mode;
+
+        document.getElementById("input-c").style.display = "none";
+        document.getElementById("output-c").style.display = "block"; 
+
+
+        document.getElementById("beaconmc_version").innerHTML = beaconmc_version;
+        document.getElementById("mc_version").innerHTML = mc_version;
+        document.getElementById("os_name").innerHTML = os_name;
+        document.getElementById("online_mode").innerHTML = online_mode;
+        document.getElementById("date").innerHTML = date;
+        document.getElementById("python_version").innerHTML = `<a href="${pythonLink}" target="_blank">${python_version}</a>`;
+        document.getElementById("total_plugin").innerHTML = total_plugin;
+        document.getElementById("traceback_error").innerHTML = "<code>" +
+            traceback_error.replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/\n/g, "<br>") 
+                .replace(" ", "&nbsp;")
+                .replace("\n", "<br>") +
+            "</code>";
+        
+        if (beaconmc_version != LATEST_VERSION) {
+            if (EXISTING_BMC_VERSIONS.includes(beaconmc_version)) {
+                document.getElementById("beaconmc_version").innerHTML += " (<b class='yellow'>outdated</b>)";
+                document.getElementById("whoatotod").innerHTML = "<br>- Please update BeaconMC to the latest version.";
+            } else {
+                document.getElementById("beaconmc_version").innerHTML += " (<b class='red'>unknown</b>)";
+                document.getElementById("whoatotod").innerHTML = "<br>- This version of BeaconMC is not recognized. Please reinstall BeaconMC from our GitHub without editing it.";
+            }
+        }
+
+        if (!LATEST_MC_VERSION.includes(mc_version)) {
+            if (EXISTING_MC_VERSIONS.includes(mc_version)) {
+                document.getElementById("mc_version").innerHTML += " (<b class='yellow'>outdated</b>)";
+                document.getElementById("whoatotod").innerHTML = "<br>- Please update Minecraft to the latest version.";
+            } else {
+                document.getElementById("mc_version").innerHTML += " (<b class='red'>unsupported</b>)";
+                document.getElementById("whoatotod").innerHTML = "<br>- This version of Minecraft is not supported.";
+            }
+
+            document.getElementById("mc_version").innerHTML += " (<b class='red'>unsupported</b>)";
+            document.getElementById("whoatotod").innerHTML = "<br>- This version of Minecraft is not supported.";
+        }
+
+
+        function comparePythonVersion(version, target) {
+            let versionParts = version.split('.');
+            let versionFloat = parseFloat(versionParts[0] + '.' + versionParts[1]);
+            return versionFloat <= target;
+        }
+
+        if (comparePythonVersion(python_version, 3.10)) {
+            if (parseFloat(python_version) <= 3.8) {
+                document.getElementById("python_version").innerHTML += " (<b class='yellow'>outdated</b>)";
+                document.getElementById("whoatotod").innerHTML += "<br> - This version of python is outdated and may cause crashes. Please update to a better version of python (" + STABLE_PYTHON_VERSION + ").";
+            }
+        }
+
+        if (comparePythonVersion(python_version, 3.0)) {
+            document.getElementById("python_version").innerHTML += " (<b class='red'>not supported</b>)";
+            document.getElementById("whoatotod").innerHTML += "<br> - BeaconMC uses python 3, python 2 will not work. Please use a recent version of python (" + STABLE_PYTHON_VERSION + ").";
+        }
+
+        if (!online_mode) {
+            document.getElementById("online_mode").innerHTML += " (<b class='red'>WARNING: NOT SECURE</b>)";
+            document.getElementById("whoatotod").innerHTML += "<br>- Please enable online mode in the server.properties file. This will prevent cracked clients from joining and enforce your server safety.";
+        }
+        if (traceback_error.includes("ModuleNotFoundError")) {
+            document.getElementById("traceback_error").innerHTML += "<br><b class='red'>ModuleNotFoundError detected</b>";
+            document.getElementById("whoatotod").innerHTML += "<br>- Please try reinstalling beaconmc, without modifications.";
+        }
+        if (traceback_error.includes("DeprecationWarning")) {
+            document.getElementById("traceback_error").innerHTML += "<br><b class='yellow'>DeprecationWarning detected</b>";
+            document.getElementById("whoatotod").innerHTML += "<br>- Please update your plugins to the latest version. Are you a plugin developper ? Please use the latest api methods.";
+        }
+        if (traceback_error.includes("SyntaxError")) {
+            document.getElementById("traceback_error").innerHTML += "<br><b class='red'>SyntaxError detected</b>";
+            document.getElementById("whoatotod").innerHTML += "<br>- Please check your plugins for syntax errors.";
+        }
+        
+        if (traceback_error.includes("ConfigurationError")) {
+            document.getElementByIf(whoatotod").innerHTML += "<br>- Your configuration contains error. Please check it using the documentation.";
+
+        if (document.getElementById("whoatotod").innerHTML === "") {
+            document.getElementById("whoatotod").innerHTML = "<br>No quick fixes or recommendations found. Please open an issue on our GitHub if you need help.";
+        }
+    }
+</script>
+</html>
