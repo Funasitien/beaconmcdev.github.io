@@ -38,8 +38,8 @@
 }
 
 :root {
-  --font: "Nunito Sans";
-  --default-font-family: "Nunito Sans" !important;
+  --font: "Aeonik";
+  --default-font-family: "Aeonik" !important;
 }
 
 @font-face {
@@ -53,6 +53,31 @@
 @font-face {
   font-family: 'Minecraft Five';
   src: url('https://mctitles.com/fonts/official/MinecraftFiveBold.otf') format('opentype');
+  font-weight: 700; /* Bold */
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Minecraft Five';
+  src: url('https://mctitles.com/fonts/official/MinecraftFive.ttf') format('truetype');
+  font-weight: 400; /* Regular */
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Aeonik';
+  src: url('/fonts/Aeonik-Regular.otf') format('opentype');
+  font-weight: 400; /* Bold */
+  font-style: normal;
+  font-display: swap;
+}
+
+
+@font-face {
+  font-family: 'Aeonik';
+  src: url('/fonts/Aeonik-Bold.otf') format('opentype');
   font-weight: 700; /* Bold */
   font-style: normal;
   font-display: swap;

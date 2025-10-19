@@ -1,92 +1,74 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import Layout from "../layouts/Layout.astro";
+import { Icon } from "astro-icon/components";
 ---
 
 <Layout>
-	<!-- buttons -->
-<div class="p-4">
-  <button class="btn btn-primary">primary</button>
-  <button class="btn btn-secondary">secondary</button>
-  <button class="btn btn-accent">accent</button>
-</div>
-
-<!-- tab -->
-<div class="tabs tabs-lift p-4">
-  <button class="tab">Tab 1</button>
-  <button class="tab tab-active">Tab 2</button>
-  <button class="tab">Tab 3</button>
-  <button class="tab"></button>
-</div>
-
-<!-- toggle, checkbox, radio -->
-<div class="p-4">
-  <input type="checkbox" class="toggle" />
-  <input type="checkbox" class="toggle toggle-primary" />
-  <input type="checkbox" class="toggle toggle-secondary" />
-  <input type="checkbox" class="toggle toggle-accent" />
-  <br/>
-  <input type="checkbox" class="checkbox" />
-  <input type="checkbox" class="checkbox-primary checkbox" />
-  <input type="checkbox" class="checkbox-secondary checkbox" />
-  <input type="checkbox" class="checkbox-accent checkbox" />
-  <br/>
-  <input type="radio" name="radio" class="radio" />
-  <input type="radio" name="radio" class="radio-primary radio" />
-  <input type="radio" name="radio" class="radio-secondary radio" />
-  <input type="radio" name="radio" class="radio-accent radio" />
-</div>
-
-<!-- card -->
-<div class="card m-4 w-80 shadow-sm">
-  <figure>
-    <img src="https://img.daisyui.com/images/blog/daisyui-5.webp" />
-  </figure>
-  <div class="card-body">
-    <h2 class="card-title">DaisyUI 5.0</h2>
-    <p>Rerum reiciendis beatae tenetur excepturi aut pariatur est eos. Sit sit necessitatibus.</p>
-  </div>
-</div>
-
-<!-- dropdown -->
-<details class="dropdown m-4">
-  <summary class="btn m-1">open/close dropdown</summary>
-  <ul class="dropdown-content menu z-[2] w-52 rounded-box bg-base-200 p-2">
-    <li><a>Item 1</a></li>
-    <li><a>Item 2</a></li>
-  </ul>
-</details>
-
-<!-- Open the modal using ID.showModal() method -->
-<button class="btn" onclick="my_modal_1.showModal()">open modal</button>
-<dialog id="my_modal_1" class="modal">
-  <form method="dialog" class="modal-box">
-    <p class="py-4">Press ESC key or click the button below to close</p>
-    <div class="modal-action">
-      <button class="btn">Close</button>
+  <div class="px-2 md:px-32 flex-1">
+    <div class="px-4 md:px-48 bg-[url('')] flex flex-col items-center">
+      <a href="https://github.com/BeaconMCDev/BeaconMC" target="_blank" class="
+            badge border-2 border-base-300 my-10
+            hover:bg-base-300 hover:scale-110
+            transition-all ease-out duration-300
+          ">
+        <Icon name="iconoir:github" /> We are on GitHub !
+        <div class="divider divider-horizontal m-0"></div>
+        <Icon
+          name="iconoir:arrow-right-circle-solid"
+          class="text-base-neutral"
+        />
+      </a>
+      <h1
+        class="py-4 text-center text-4xl md:text-6xl font-bold font-[Minecraft_Five]"
+      >
+        The <span
+          class="bg-linear-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent"
+          >lightweight</span
+        ><span> 🚀</span> Python Minecraft server software!
+      </h1>
+      <div class="flex flex-col md:flex-row gap-4">
+      <a href="https://github.com/BeaconMCDev/BeaconMC/archive/refs/heads/main.zip" target="_blank" class="btn btn-primary btn-lg w-56">
+        <Icon name="iconoir:download" />
+        Downloads
+      </a>
+      <a class="btn btn-lg w-56">
+        <Icon name="iconoir:bug" />
+        Crash Analyser
+      </a>
+      </div>
     </div>
-  </form>
-</dialog>
-
-<!-- steps -->
-<ul class="steps my-4 w-full">
-  <li class="step step-primary">Register</li>
-  <li class="step step-primary">Choose plan</li>
-  <li class="step">Purchase</li>
-  <li class="step">Receive Product</li>
-</ul>
-
-<!-- chat bubble -->
-<div class="chat chat-start m-4">
-  <div class="avatar chat-image">
-    <div class="w-10 rounded-full">
-      <img src="https://img.daisyui.com/images/profile/people/pouya-saadeghi.webp" />
+    <div class="mt-8 py-4">
+      <h2 class="text-3xl font-bold font-[Minecraft_Five]">Our goal</h2>
+      <p>
+        BeaconMC's goal is to provide an alternative to Java developed servers,
+        and make Minecraft plugin creation easier and more accessible for Python
+        developers and for new developers.
+      </p>
+    </div>
+    <div class="py-6">
+      <h2 class="text-3xl font-bold font-[Minecraft_Five]">
+        An easy plugin creation
+      </h2>
+      <p>
+        We designed the plugin system to make it easy to use, efficient and
+        complete, with event handler, canceller and modifiers, and a complete
+        documentation (actually in work).
+      </p>
+    </div>
+    <div class="py-6 mb-10">
+      <h2 class="text-3xl font-bold font-[Minecraft_Five]">
+        Join our community
+      </h2>
+      <p class="mb-5">
+        Join us now on our Discord server and on our GitHub, you can contribute
+        and help us to develop this project by posting an issue on GitHub or a
+        ticket on Discord (and by this way you can become a BeaconMC developer)
+        !
+      </p>
+      <a class="btn btn-lg bg-indigo-600">
+        <Icon name="iconoir:discord" />
+        Join the discord
+      </a>
     </div>
   </div>
-  <div class="chat-bubble">see all components <a class="link" target="_blank" href="https://daisyui.com/components">Here</a></div>
-</div>
-
 </Layout>
