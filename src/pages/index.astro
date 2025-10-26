@@ -3,11 +3,11 @@ import Layout from "../layouts/Layout.astro";
 import { Icon } from "astro-icon/components";
 ---
 
-<Layout>
-  <div class="px-2 md:px-32 flex-1">
+<Layout title="BeaconMC - Lightweight Python Minecraft server software!">
+  <div class="px-2 md:px-32">
     <div class="px-4 md:px-48 bg-[url('')] flex flex-col items-center">
       <a href="https://github.com/BeaconMCDev/BeaconMC" target="_blank" class="
-            badge border-2 border-base-300 my-10
+            badge border-2 border-base-300 my-6
             hover:bg-base-300 hover:scale-110
             transition-all ease-out duration-300
           ">
@@ -19,19 +19,19 @@ import { Icon } from "astro-icon/components";
         />
       </a>
       <h1
-        class="py-4 text-center text-4xl md:text-6xl font-bold font-[Minecraft_Five]"
+        class="py-2 text-center text-4xl md:text-5xl font-bold font-[Minecraft_Five]"
       >
         The <span
           class="bg-linear-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent"
           >lightweight</span
         ><span> 🚀</span> Python Minecraft server software!
       </h1>
-      <div class="flex flex-col md:flex-row gap-4">
+      <div class="flex flex-col md:flex-row gap-4 pt-6">
       <a href="https://github.com/BeaconMCDev/BeaconMC/archive/refs/heads/main.zip" target="_blank" class="btn btn-primary btn-lg w-56">
         <Icon name="iconoir:download" />
         Downloads
       </a>
-      <a class="btn btn-lg w-56">
+      <a href="./debugger" class="btn btn-lg w-56">
         <Icon name="iconoir:bug" />
         Crash Analyser
       </a>

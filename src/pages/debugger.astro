@@ -1,0 +1,165 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="BeaconMC - Crash Analyzer">
+			<div class="px-4 md:px-32">
+				<div class="card-body">
+					<h1 class="card-title text-2xl sm:text-3xl">BeaconMC Crash Analyzer</h1>
+					<p class="text-sm opacity-70">Paste the JSON part of a crash report and click Analyze. The tool does not send anything — parsing happens in your browser.</p>
+
+					<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+						<section>
+							<label class="block text-sm font-medium mb-2">Crash data (paste JSON)</label>
+							<textarea id="crash-input" class="textarea textarea-bordered h-40 w-full" placeholder='Paste crash JSON here...'></textarea>
+							<div class="mt-3 flex gap-2">
+								<button id="analyze-btn" class="btn btn-primary">Analyze</button>
+								<button id="reset-btn" class="btn btn-ghost">Reset</button>
+							</div>
+						</section>
+
+						<section>
+							<h2 class="text-lg font-semibold">Result</h2>
+							<div id="result" class="prose max-w-none mt-2">
+								<p class="text-sm opacity-60">No result yet — paste a crash JSON and press Analyze.</p>
+							</div>
+						</section>
+					</div>
+
+					<div class="mt-6">
+						<h3 class="font-semibold">Quick fixes / recommendations</h3>
+						<div id="recommendations" class="mt-2">
+							<p class="text-sm opacity-60">None.</p>
+						</div>
+					</div>
+
+					<div class="mt-6 bg-base-200 p-4 rounded">
+						<h3 class="font-semibold">FAQ</h3>
+						<ul class="list-disc list-inside mt-2 space-y-2 text-sm">
+							<li><strong>Where are crash reports?</strong> They are in the server directory under <code>crash_reports/</code>.</li>
+							<li><strong>What to paste?</strong> Paste the JSON object part of the crash report (the part that looks like <code>{"{ ... }"}</code>).</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+		<script>
+			/* @ts-nocheck */
+		// Client-side parsing logic. Runs in-browser only.
+		document.addEventListener('DOMContentLoaded', () => {
+			const input = document.getElementById('crash-input');
+			const analyzeBtn = document.getElementById('analyze-btn');
+			const resetBtn = document.getElementById('reset-btn');
+			const result = document.getElementById('result');
+			const rec = document.getElementById('recommendations');
+
+			const LATEST_BMC_VERSION = 'Alpha-dev';
+			const EXISTING_BMC_VERSIONS = ['Alpha-dev', 'Alpha'];
+			const LATEST_MC_VERSION = '1.21.8';
+			const EXISTING_MC_VERSIONS = ['1.21.8', '1.21'];
+			const STABLE_PYTHON_VERSION = '3.10.9';
+
+			function safeParseJSONFromText(text) {
+				const idx = text.lastIndexOf('{');
+				if (idx === -1) return null;
+				const maybe = text.slice(idx);
+				try {
+					return JSON.parse(maybe);
+				} catch (e) {
+					return null;
+				}
+			}
+
+			function parseVersion(str) {
+				if (!str) return 'unknown';
+				const m = String(str).match(/\d+\.\d+(?:\.\d+)?/);
+				return m ? m[0] : 'unknown';
+			}
+
+			function parsePythonVersion(str) {
+				const v = parseVersion(str);
+				const parts = v.split('.');
+				const major = parts[0] || '3';
+				const minor = parts[1] || '10';
+				const link = `https://docs.python.org/${major}.${minor}/`;
+				return { cleanVersion: v, pythonLink: link };
+			}
+
+			function formatDate(iso) {
+				try { return new Date(iso).toLocaleString(); } catch (e) { return iso || 'unknown'; }
+			}
+
+			function renderOutput(data) {
+				// try multiple keys commonly found
+				const bmc = data.bmc_version ?? data.beaconmc_version ?? data.version ?? 'unknown';
+				const mc = data.mc_version ?? data.minecraft_version ?? data.minecraft ?? 'unknown';
+				const os = data.os_name ?? data.os ?? 'unknown';
+				const date = formatDate(data.date ?? data.time ?? data.timestamp);
+				const python = data.python_version ?? data.python ?? 'unknown';
+				const totalPlugin = data.total_plugin ?? data.plugins ?? data.total_plugins ?? 'unknown';
+				const traceback = data.traceback ?? data.error ?? data.exception ?? '';
+				const online = (typeof data.online_mode !== 'undefined') ? String(data.online_mode) : (data.online ?? 'unknown');
+
+				const { cleanVersion: pyClean, pythonLink } = parsePythonVersion(python);
+
+				result.innerHTML = `
+					<div class="space-y-2">
+						<p><strong>BeaconMC Version:</strong> ${escapeHtml(bmc)}</p>
+						<p><strong>Minecraft Version:</strong> ${escapeHtml(parseVersion(mc))}</p>
+						<p><strong>OS Name:</strong> ${escapeHtml(os)}</p>
+						<p><strong>Date:</strong> ${escapeHtml(date)}</p>
+						<p><strong>Python Version:</strong> <a class="link" href="${pythonLink}" target="_blank" rel="noreferrer">${escapeHtml(pyClean)}</a></p>
+						<p><strong>Online mode:</strong> ${escapeHtml(online)}</p>
+						<p><strong>Total plugins:</strong> ${escapeHtml(totalPlugin)}</p>
+						<div><strong>Traceback / error:</strong><pre class="whitespace-pre-wrap bg-base-200 p-3 rounded text-sm">${escapeHtml(traceback)}</pre></div>
+					</div>
+				`;
+
+				// recommendations
+				const recs = [];
+				if (bmc !== LATEST_BMC_VERSION) {
+					if (EXISTING_BMC_VERSIONS.includes(bmc)) recs.push('- Your BeaconMC is outdated. Consider updating.');
+					else recs.push('- Unknown BeaconMC version. Reinstall from GitHub without edits.');
+				}
+				const mcVer = parseVersion(mc);
+				if (!LATEST_MC_VERSION.includes(mcVer)) {
+					if (EXISTING_MC_VERSIONS.includes(mcVer)) recs.push('- Minecraft is outdated. Update to latest.');
+					else recs.push('- Minecraft version unsupported.');
+				}
+				const pyFloat = parseFloat(pyClean) || 0;
+				if (pyFloat && pyFloat < 3.10) recs.push(`- Python ${pyClean} may be unsupported; prefer ${STABLE_PYTHON_VERSION} or newer.`);
+				if (traceback && traceback.includes('ModuleNotFoundError')) recs.push('- ModuleNotFoundError: try reinstalling or installing missing packages.');
+				if (traceback && traceback.includes('DeprecationWarning')) recs.push('- DeprecationWarning: update plugins to latest API.');
+				if (traceback && traceback.includes('SyntaxError')) recs.push('- SyntaxError detected: check plugin source for mistakes.');
+				if (online === 'false' || online === '0' || online === 'no') recs.push('- Online mode is disabled: this is insecure. Enable online mode in server.properties.');
+
+				if (recs.length === 0) rec.innerHTML = '<p class="text-sm opacity-60">No quick fixes found.</p>';
+				else rec.innerHTML = '<ul class="list-disc list-inside text-sm">' + recs.map(r => `<li>${escapeHtml(r)}</li>`).join('') + '</ul>';
+			}
+
+			function escapeHtml(s) {
+				if (s === null || s === undefined) return '';
+				return String(s)
+					.replace(/&/g, '&amp;')
+					.replace(/</g, '&lt;')
+					.replace(/>/g, '&gt;')
+					.replace(/"/g, '&quot;')
+					.replace(/'/g, '&#39;');
+			}
+
+			analyzeBtn.addEventListener('click', () => {
+				const text = input.value.trim();
+				if (!text) { alert('Please paste crash data first.'); return; }
+				const data = safeParseJSONFromText(text);
+				if (!data) { alert('Could not parse JSON. Make sure you pasted the crash JSON object.'); return; }
+				renderOutput(data);
+			});
+
+			resetBtn.addEventListener('click', () => {
+				input.value = '';
+				result.innerHTML = '<p class="text-sm opacity-60">No result yet — paste a crash JSON and press Analyze.</p>';
+				rec.innerHTML = '<p class="text-sm opacity-60">None.</p>';
+			});
+		});
+	</script>
+</Layout>

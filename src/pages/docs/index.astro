@@ -1,0 +1,21 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+const docs = await getCollection('docs');
+const sortedDocs = docs.sort((a, b) => (a.data.order || 0) - (b.data.order || 0));
+---
+
+<Layout title="Documentation">
+  <div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-8">Documentation</h1>
+    <div class="grid gap-4">
+      {sortedDocs.map(doc => (
+        <a href={`/docs/${doc.id}`} class="block p-4 border rounded-lg card">
+          <h2 class="card-title">{doc.data.title}</h2>
+          <p class="">{doc.data.description}</p>
+        </a>
+      ))}
+    </div>
+  </div>
+</Layout>
